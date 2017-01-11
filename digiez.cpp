@@ -46,24 +46,29 @@ int main(int argc, const char *argv[])
 
 	int w = width/(nbDiv+1);
 	int h = height/(nbDiv+1);
+	int diff;
+	char* name1= new char[32];
+	char* name2 = new char[32];
+	char* falseIm = new char[32];
+	char * trueIm = new char[32];
 
+	int error, index = 1, j = 1;
 	BMP im1;
 	BMP im2;	
 
-	for (int i = 2; i < 10; i++) {
+	for (int i = 2; i < 200; i++) {
 		int a = i-1;
-		char buffer[32];
-
-		sprintf(buffer, "images/out%d.bmp", a);
-		im1.ReadFromFile(buffer);
-		sprintf(buffer, "images/out%d.bmp", i);
-		im2.ReadFromFile(buffer);
+		sprintf(name1, "images/out%d.bmp", a);
+		im1.ReadFromFile(name1);
+		sprintf(name2, "images/out%d.bmp", i);
+		im2.ReadFromFile(name2);
 		
 
 		int** pi1 = getPixels(im1,nbDiv, w,h);
 		int** pi2 = getPixels(im2,nbDiv ,w,h);
 
-		printf("%d\n", getSumDiff(points, pi1, pi2));
+		diff = getSumDiff(points, pi1, pi2);
+		printf("%d\n", diff);
 		/*
 		for (int i = 0; i < points; i++) {
 			printf("Differences in point %d\n", i);
@@ -73,6 +78,16 @@ int main(int argc, const char *argv[])
 			printf("\n");
 		}
 		*/
+		sprintf(trueIm, "images/new%03d.bmp", i-index);
+		error = rename(name1,trueIm);
+
+		if (diff>10*points) {
+			i++;
+			printf("%s\n", name2);
+			sprintf(falseIm, "images/false/false%d.bmp", index);
+			error = rename(name2,falseIm);
+			index++;
+		}
 		for (int i = 0; i < points; i++) {
 			delete [] pi1[i];
 			delete [] pi2[i];
@@ -83,10 +98,11 @@ int main(int argc, const char *argv[])
 	}
 
 
-
-
-
-
+	delete [] name1;
+	delete [] name2;
+	delete [] falseIm;
+	delete [] trueIm;
+	
 
 
 
