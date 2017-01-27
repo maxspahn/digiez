@@ -106,24 +106,29 @@ int main(int argc, const char *argv[])
 	
 	
 	
-	
+	// as an input the number of images in the folder "images/" is counted in the bash file
 	int end = atoi(argv[2])-3;
 	
+	// creating an array for all the changings that are done
 	int * changings = new int[end];
 	for (int i = 0; i < end; i++) {
 		changings[i] = i;
 	}
 
 	//set first image
-	//
+	//it is done manually, because i did not know how to reckonize the first image
 	changings[0] = 30;
 	changings[30] = 0;
 
-
+	//Usage of the library that is able to deal with '.bmp'-files.
+	//Creating an arry of all the images.
+	//the values of all pixels for all images is stored in col.
 	BMP* list = readAllImages(end);
 	int** col = getAllPixels(list, nbDiv, w, h, end);
 
-
+	//line 132-148 : core function of the program
+	//compare the first image to all the others and choosing the least different as the second
+	//-> then you pass to the second image etc.
 	int temp;
 	int diff, min, index;
 	for (int i = 0; i < end-1; i++) {
@@ -140,11 +145,9 @@ int main(int argc, const char *argv[])
 		changings[i+1] = changings[index];
 		changings[index] = temp;
 		
-		//printf("Difference between %d and %d : %d\n",i+1, i+2,diff1);
 	}
-	for (int i = 0; i < end; i++) {
-		printf("%d\n", changings[i]+1);
-	}
+
+	//changing the names of the files
 	char * name = new char[32];
 	char * newname = new char[32];
 	int error;
@@ -153,6 +156,16 @@ int main(int argc, const char *argv[])
 		sprintf(newname, "images/new%03d.bmp", i);
 		error = rename(name, newname);
 	}
+	
 
+	//Free memory by deleting all the arrays
+	delete [] list;
+	for (int i = 0; i < end*3; i++) {
+		delete [] col[i];
+	}
+	delete [] col;	
+	delete [] name; 
+	delete [] newname;
+	delete [] changings;
 	return 0;
 }

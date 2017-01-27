@@ -13,7 +13,7 @@ numfiles=$(ls ./images -a | wc -l)
 echo $numfiles
 
 echo "Finding and move bad images"
-./d 10 $numfiles
+./d 20 $numfiles
 
 ffmpeg -r 25 -f image2 -i ./images/new%03d.bmp -vcodec libx265 -crf 25  -pix_fmt yuv420p ./Corrected.mkv
 
